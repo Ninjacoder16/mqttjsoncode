@@ -8,7 +8,7 @@ const char* ssid = "AIRCON1";
 const char* password = "LT123456";
 const char* mqtt_broker = "broker.emqx.io";
 const int mqtt_port = 1883;
-const char* mqtt_topic = "Aartikanwar/sensors/dht";
+//const char* mqtt_topic = "Aartikanwar/sensors/dht";
 
 // DHT Sensor setup
 #define DHTPIN 4       // GPIO pin connected to DHT sensor
@@ -58,6 +58,7 @@ void loop() {
   }
   client.loop();
   String macAddress = WiFi.macAddress();
+  String mqtt_topic1 = "Aartikanwar/sensors/status/" + macAddress; // Topic for status
 
   // Read temperature and humidity from DHT sensor
   float temperature = dht.readTemperature(); // Celsius
@@ -73,7 +74,7 @@ void loop() {
   StaticJsonDocument<200> doc;
   doc["temperature"] = temperature;
   doc["humidity"] = humidity;
-  doc["mac_id"] = macAddress.c_str();
+  //doc["mac_id"] = macAddress.c_str();
   doc["timestamp"] = millis(); // Use system time or add RTC if available
 
   // Serialize JSON to a string
@@ -81,7 +82,7 @@ void loop() {
   serializeJson(doc, jsonBuffer);
 
   // Publish JSON payload to MQTT topic
-  client.publish(mqtt_topic, jsonBuffer);
+  client.publish(mqtt_topic1.c_str(), jsonBuffer);
 
   // Print JSON payload to Serial Monitor
   Serial.println("Published JSON payload:");
